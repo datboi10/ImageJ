@@ -15,13 +15,22 @@ function recursiveSelect(startX, startY) {
         gd.addNumericField("X:", x);
         gd.addNumericField("Y:", y);
         gd.showDialog();
+        x = gd.getNextNumber();
+        y = gd.getNextNumber();
     }
     pixelValue = ip.getPixel(x, y)
     if (pixelValue != 255) {
-        ij.log("pixel was not white");
+        IJ.log("pixel was not white");
         return;
     }
-    ij.log("correct!")
+    IJ.log("correct!")
 }
 
-recursiveSelect()
+if (points.length === 0) {
+    IJ.error("No valid multi-point selections found.");
+} else {
+    for (i = 0; i < points.length; i++) {
+        startX = points[i].x, startY = points[i].y;
+        recursiveSelect(startX, startY);
+    }
+}
