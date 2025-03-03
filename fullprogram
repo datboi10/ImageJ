@@ -1,0 +1,27 @@
+//generic imports
+importClass(Packages.ij.IJ);
+importClass(Packages.ij.plugin.frame.RoiManager);
+importClass(Packages.ij.gui.GenericDialog);
+//generic image variable assignment
+imp = IJ.getImage();
+ip = imp.getProcessor();
+//recursive bounding box function
+function recursiveSelect(startX, startY) {
+    //create dialog box
+    if (startX == null || startY == null) {
+        title = "Enter point";
+        y=imp.height/2; x=imp.width/2;
+        gd = new GenericDialog("Example Dialog");
+        gd.addNumericField("X:", x);
+        gd.addNumericField("Y:", y);
+        gd.showDialog();
+    }
+    pixelValue = ip.getPixel(x, y)
+    if (pixelValue != 255) {
+        ij.log("pixel was not white");
+        return;
+    }
+    ij.log("correct!")
+}
+
+recursiveSelect()
