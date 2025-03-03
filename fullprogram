@@ -5,6 +5,8 @@ importClass(Packages.ij.gui.GenericDialog);
 //generic image variable assignment
 imp = IJ.getImage();
 ip = imp.getProcessor();
+// Initialize points array
+points = roi.getContainedPoints();
 //recursive bounding box function
 function recursiveSelect(startX, startY) {
     //create dialog box
