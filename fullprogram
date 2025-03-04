@@ -17,13 +17,32 @@ function recursiveSelect(startX, startY) {
         gd.showDialog();
         x = gd.getNextNumber();
         y = gd.getNextNumber();
+    } else {
+        x = startX;
+        y = startY;
     }
     pixelValue = ip.getPixel(x, y)
     if (pixelValue != 255) {
-        IJ.log("pixel was not white");
+        IJ.log(imageIndex(i) + " pixel was not white " + ip.getWidth());
         return;
     }
-    IJ.log("correct!")
+    IJ.log(imageIndex(i) + " pixel was white " + ip.getWidth());
+    for (ix, ix < ip.getWidth(), ix++);
+        if (ip.getPixel(x+ix, y) == 255) {
+            width += ix;
+            break;
+        }
+    }
+    for (ix, ix < ip.getWidth(), ix++){
+        if (ip.getPixel(x-ix, y) == 255) {
+            width += ix;
+            break;
+        }
+    }
+}
+//function to output image index number to append to log message
+function imageIndex(number){
+    return[Math.floor(number / 12), Math.ceil(((number % 12) + 1) / 2), ((number % 12) % 2) + 1, number + 1];
 }
 // Initialize points array
 var roi = imp.getRoi();
