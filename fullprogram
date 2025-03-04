@@ -5,8 +5,6 @@ importClass(Packages.ij.gui.GenericDialog);
 //generic image variable assignment
 imp = IJ.getImage();
 ip = imp.getProcessor();
-// Initialize points array
-points = roi.getContainedPoints();
 //recursive bounding box function
 function recursiveSelect(startX, startY) {
     //create dialog box
@@ -27,7 +25,13 @@ function recursiveSelect(startX, startY) {
     }
     IJ.log("correct!")
 }
-
+// Initialize points array
+var roi = imp.getRoi();
+if (roi == null || !(roi instanceof PointRoi)) {
+    IJ.error("Please use the multi-point tool to select starting points.");
+}
+points = roi.getContainedPoints(); // Returns an array of points [{x: ..., y: ...}, ...]
+//aprogram loop
 if (points.length === 0) {
     IJ.error("No valid multi-point selections found.");
 } else {
