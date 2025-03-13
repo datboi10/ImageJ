@@ -22,36 +22,39 @@ function recursiveSelect(startX, startY) {
         y = startY;
     }
     //recursive function to fill in bounding box
-    return recursiveFill([x], [y]);
+    recursiveFill([x], [y]);
 }
 //recursive function to fill in bounding box
 function recursiveFill(x, y) {
-    for (j = 0; i <= x.length; i++) {
+    for (j = 1; j <= x.length; j++) {
+        IJ.log(j)
         //check if pixel is white
-        if (ip.get(x.[i], y.[i]) < 250) {
+        if (ip.get(x[j], y[j]) < 250) {
             IJ.log("Starting point is not a white pixel (value >= 250)");
-            return;
+            IJ.log(ip.get(x[j], y[j]));
+            break;
         }
         //check if pixel is already checked
-        if (checkedList.includes([x.[i], y.[i]])) {
-            return;
+        if (checkedList.indexOf([x[j], y[j]]) !== -1) {
+            break;
         }
         //add point to list of checked points
-        checkedList.append([x.[i], y.[i]]);
+        checkedList.push([x[j], y[j]]);
         //fill in pixel
-        ip.set(x.[i], y.[i], 128);
+        ip.set(x[j], y[j], 128);
         //update point variables if the value is more extreem than the current value
-        if x.[i] > px {
-            px = x.[i];
+        IJ.log(x[j], y[j])
+        if (x[j] > px) {
+            px = x[j];
         }
-        if x.[i] < nx {
-            nx = x.[i];
+        if (x[j] < nx) {
+            nx = x[j];
         }
-        if y.[i] > py {
-            py = y.[i];
+        if (y[j] > py) {
+            py = y[j];
         }
-        if y.[i] < ny {
-            ny = y.[i];
+        if (y[j] < ny) {
+            ny = y[j];
         }
     }
     recursiveFill([x+1, x-1], [y+1, y-1])
