@@ -21,24 +21,41 @@ function recursiveSelect(startX, startY) {
         x = startX;
         y = startY;
     }
-    pixelValue = ip.getPixel(x, y)
-    if (pixelValue != 255) {
-        IJ.log(imageIndex(i) + " pixel was not white " + ip.getWidth());
-        return;
-    }
-    IJ.log(imageIndex(i) + " pixel was white " + ip.getWidth());
-    for (ix, ix < ip.getWidth(), ix++);
-        if (ip.getPixel(x+ix, y) == 255) {
-            width += ix;
-            break;
+    //recursive function to fill in bounding box
+    return recursiveFill([x], [y]);
+}
+//recursive function to fill in bounding box
+function recursiveFill(x, y) {
+    for (j = 0; i <= x.length; i++) {
+        //check if pixel is white
+        if (ip.get(x.[i], y.[i]) < 250) {
+            IJ.log("Starting point is not a white pixel (value >= 250)");
+            return;
+        }
+        //check if pixel is already checked
+        if (checkedList.includes([x.[i], y.[i]])) {
+            return;
+        }
+        //add point to list of checked points
+        checkedList.append([x.[i], y.[i]]);
+        //fill in pixel
+        ip.set(x.[i], y.[i], 128);
+        //update point variables if the value is more extreem than the current value
+        if x.[i] > px {
+            px = x.[i];
+        }
+        if x.[i] < nx {
+            nx = x.[i];
+        }
+        if y.[i] > py {
+            py = y.[i];
+        }
+        if y.[i] < ny {
+            ny = y.[i];
         }
     }
-    for (ix, ix < ip.getWidth(), ix++){
-        if (ip.getPixel(x-ix, y) == 255) {
-            width += ix;
-            break;
-        }
-    }
+    recursiveFill([x+1, x-1], [y+1, y-1])
+
 }
 //function to output image index number to append to log message
 function imageIndex(number){
@@ -50,11 +67,19 @@ if (roi == null || !(roi instanceof PointRoi)) {
     IJ.error("Please use the multi-point tool to select starting points.");
 }
 points = roi.getContainedPoints(); // Returns an array of points [{x: ..., y: ...}, ...]
-//aprogram loop
+//program loop
 if (points.length === 0) {
     IJ.error("No valid multi-point selections found.");
 } else {
     for (i = 0; i < points.length; i++) {
+        //reset width and height variables
+        width = 0;
+        height = 0;
+        px = 0;
+        nx = 1000000000;
+        py = 0;
+        ny = 1000000000;
+        checkedList = [];
         startX = points[i].x, startY = points[i].y;
         recursiveSelect(startX, startY);
     }
