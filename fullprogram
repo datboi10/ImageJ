@@ -2,6 +2,10 @@
 importClass(Packages.ij.IJ);
 importClass(Packages.ij.plugin.frame.RoiManager);
 importClass(Packages.ij.gui.GenericDialog);
+importClass(Packages.ij.measure.ResultsTable);
+importClass(Packages.ij.gui.PointRoi);
+importClass(Packages.ij.gui.Roi);
+importClass(Packages.ij.plugin.filter.Analyzer);
 //generic image variable assignment
 imp = IJ.getImage();
 ip = imp.getProcessor();
@@ -24,8 +28,12 @@ function recursiveSelect(startX, startY) {
     //recursive function to fill in bounding box
     recursiveFill(x, y);
     print(px + " " + nx + " " + py + " " + ny);
-    imp.setRoi(nx, ny, px-nx., py-ny);
+    imp.setRoi(nx, ny, px-nx+1, py-ny+1);
     imp.updateAndDraw();
+    IJ.run(imp, "Make Binary", "");
+    measureROI(nx, ny, px-nx+1, py-ny+1);
+    rt.show("Results");
+
 }
 //recursive function to fill in bounding box
 function recursiveFill(x, y) {
@@ -51,6 +59,7 @@ function recursiveFill(x, y) {
     checkedList.push([x, y]);
     //fill in pixel
     ip.set(x, y, 128);
+    imp.updateAndDraw();
     j =+ 1;
     IJ.log(j);
     IJ.log(x);
@@ -89,6 +98,29 @@ function arrayContains(checkedList, targetArray) {
         }
     }
     return false;
+}
+//measure ROI
+function measureROI(nx, ny, width, height) {
+    // Determine if the bounding box is vertical and tall or horizontal and wide
+    minFeret = Math.min(width, height);
+    orientation = null;
+    if (height > width) {
+        orientation = "vertical and tall";
+    } else {
+        orientation = "horizontal and wide";
+    }
+    
+    // Log the bounding box dimensions, orientation, and MinFeret
+    IJ.log("Bounding box dimensions: width=" + width + ", height=" + height + ", orientation=" + orientation + ", MinFeret=" + minFeret);
+    
+    // Store the dimensions, orientation, and MinFeret in the ResultsTable
+    rt.incrementCounter();
+    rt.addValue("Area", width * height);
+    rt.addValue("Mean", mean);
+    rt.addValue("Width", width);
+    rt.addValue("Height", height);
+    rt.addValue("Orientation", orientation);
+    rt.addValue("MinFeret", minFeret);
 }
 // Initialize points array
 var roi = imp.getRoi();
