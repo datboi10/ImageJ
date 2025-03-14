@@ -22,47 +22,73 @@ function recursiveSelect(startX, startY) {
         y = startY;
     }
     //recursive function to fill in bounding box
-    recursiveFill([x], [y]);
+    recursiveFill(x, y);
+    print(px + " " + nx + " " + py + " " + ny);
+    imp.setRoi(nx, ny, px-nx., py-ny);
+    imp.updateAndDraw();
 }
 //recursive function to fill in bounding box
 function recursiveFill(x, y) {
-    for (j = 1; j <= x.length; j++) {
-        IJ.log(j)
-        //check if pixel is white
-        if (ip.get(x[j], y[j]) < 250) {
-            IJ.log("Starting point is not a white pixel (value >= 250)");
-            IJ.log(ip.get(x[j], y[j]));
-            break;
-        }
-        //check if pixel is already checked
-        if (checkedList.indexOf([x[j], y[j]]) !== -1) {
-            break;
-        }
-        //add point to list of checked points
-        checkedList.push([x[j], y[j]]);
-        //fill in pixel
-        ip.set(x[j], y[j], 128);
-        //update point variables if the value is more extreem than the current value
-        IJ.log(x[j], y[j])
-        if (x[j] > px) {
-            px = x[j];
-        }
-        if (x[j] < nx) {
-            nx = x[j];
-        }
-        if (y[j] > py) {
-            py = y[j];
-        }
-        if (y[j] < ny) {
-            ny = y[j];
-        }
+    //check if pixel is white
+    if (ip.get(x, y) < 250) {
+        IJ.log("Starting point is not a white pixel (value >= 250)");
+        IJ.log(ip.get(x, y).toString());
+        j =+ 1;
+        IJ.log(j);
+        IJ.log(x);
+        IJ.log(y);
+        return;
     }
-    recursiveFill([x+1, x-1], [y+1, y-1])
-
+    //check if pixel is already checked
+    //if (arrayContains(checkedList, [x, y])) {
+    //    j =+ 1;
+    //    IJ.log(j);
+    //    IJ.log(x);
+    //    IJ.log(y);
+    //    return;
+    //}
+    //add point to list of checked points
+    checkedList.push([x, y]);
+    //fill in pixel
+    ip.set(x, y, 128);
+    j =+ 1;
+    IJ.log(j);
+    IJ.log(x);
+    IJ.log(y);
+    //update point variables if the value is more extreem than the current value
+    if (x > px) {
+        px = x;
+    }
+    if (x < nx) {
+        nx = x;
+    }
+    if (y > py) {
+        py = y;
+    }
+    if (y < ny) {
+        ny = y;
+    }
+    recursiveFill(x+2, y+1);
+    recursiveFill(x-2, y-1);
+    recursiveFill(x-1, y+2);
+    recursiveFill(x+1, y-2);
 }
 //function to output image index number to append to log message
 function imageIndex(number){
     return[Math.floor(number / 12), Math.ceil(((number % 12) + 1) / 2), ((number % 12) % 2) + 1, number + 1];
+}
+//toggle function for even and odd numbers
+function evenOdd(n) {
+    return n % 2 === 0 ? 1 : -1;
+}
+//check list for a tuple
+function arrayContains(checkedList, targetArray) {
+    for (k = 0; k < checkedList.length; k++) {
+        if (checkedList[k][0] === targetArray[0] && checkedList[k][1] === targetArray[1]) {
+            return true;
+        }
+    }
+    return false;
 }
 // Initialize points array
 var roi = imp.getRoi();
@@ -85,5 +111,7 @@ if (points.length === 0) {
         checkedList = [];
         startX = points[i].x, startY = points[i].y;
         recursiveSelect(startX, startY);
+        IJ.log(checkedList)
     }
+    IJ.log("run")
 }
