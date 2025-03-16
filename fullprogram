@@ -9,6 +9,8 @@ importClass(Packages.ij.plugin.filter.Analyzer);
 //generic image variable assignment
 imp = IJ.getImage();
 ip = imp.getProcessor();
+// Initialize ResultsTable
+rt = new ResultsTable();
 //recursive bounding box function
 function recursiveSelect(startX, startY) {
     //create dialog box
@@ -134,12 +136,14 @@ if (points.length === 0) {
 } else {
     for (i = 0; i < points.length; i++) {
         //reset width and height variables
-        width = 0;
-        height = 0;
-        px = 0;
-        nx = 1000000000;
-        py = 0;
-        ny = 1000000000;
+        if (i === 0 || i % 3 === 0) {
+            width = 0;
+            height = 0;
+            px = 0;
+            nx = 1000000000;
+            py = 0;
+            ny = 1000000000;
+        }
         checkedList = [];
         startX = points[i].x, startY = points[i].y;
         recursiveSelect(startX, startY);
